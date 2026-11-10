@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gérer — {{ seance.seance_id }}</title>
+  <link rel="stylesheet" href="/static/studysync-ul.css" />
+</head>
+<body class="page-sub page-gerer">
+{% set header_creer = 'none' %}
+{% include 'partials/_header_studymatch.html' %}
+  <div class="layout-narrow gerer-layout">
+    <div class="top-bar top-bar--split">
+      <div class="top-bar-links">
+        {% if design_preview %}
+        <a class="back" href="{{ url_for('page_mes_sessions', etudiant_id=etudiant_id, design='1') }}">← Mes sessions</a>
+        {% else %}
+        <a class="back" href="{{ url_for('page_mes_sessions', etudiant_id=etudiant_id) }}">← Mes sessions</a>
+        {% endif %}
+        <a class="back" href="{{ url_for('page_disponibilite') }}">Séances</a>
+      </div>
+    </div>
+
+    <header class="gerer-page-head">
+      <h1>Gérer la séance</h1>
+      <p class="sub">
+        {{ seance.csigle }}{% if seance.nom_cours %} — {{ seance.nom_cours }}{% endif %}
+        · <code>{{ seance.seance_id }}</code>
+      </p>
+    </header>
+
+    {% if error_msg %}
+      <div class="alert" role="alert">{{ error_msg }}</div>
+    {% endif %}
+
+    {% set _dd = seance.debut_datetime or '' %}
+    {% set debut_input = (_dd[:16]|replace(' ', 'T')) if (_dd|length >= 16) else '' %}
+
+    <section class="gerer-block" aria-labelledby="gerer-infos-title">
+      <div class="gerer-block-banner">
+        <span class="gerer-block-badge" aria-hidden="true">i</span>
+        <h2 class="gerer-block-title" id="gerer-infos-title">Informations</h2>
+      </div>
+      <div class="gerer-block-body">
+        <dl class="gerer-meta-grid">
+          <div class="gerer-meta-row">
+            <dt>Statut actuel</dt>
+            <dd>
+              <span class="chip">{{ seance.statut_label }}</span>
+              <span class="gerer-code-muted">({{ seance.statut }})</span>
+            </dd>
+          </div>
+          <div class="gerer-meta-row">
+            <dt>Date</dt>
+            <dd>{{ seance.debut_date_longue or '—' }} · {{ seance.heure_plage or '—' }}</dd>
+          </div>
+          <div class="gerer-meta-row">
+            <dt>Mode</dt>
+            <dd>{{ seance.mode or '—' }}</dd>
+          </div>
+          <div class="gerer-meta-row">
+            <dt>Lieu ou lien</dt>
+            <dd>{{ seance.lieu_ou_lien or '—' }}</dd>
+          </div>
+          <div class="gerer-meta-row">
+            <dt>Participants acceptés</dt>
+            <dd>
+              {{ nb_acceptes }}
+              {% if seance.max_participants %}<span class="gerer-code-muted"> / {{ seance.max_participants }} max</span>{% else %}<span class="gerer-code-muted"> (pas de plafond)</span>{% endif %}
+            </dd>
+          </div>
+          {% if seance.description %}
+            <div class="gerer-meta-row gerer-meta-full">
+              <dt>Détails pour les participants</dt>
+              <dd class="gerer-desc">{{ seance.description }}</dd>
+            </div>
+          {% endif %}
+        </dl>
+      </div>
+    </section>
+
+    <section class="gerer-block" aria-labelledby="gerer-modifier-title">
+      <div class="gerer-block-banner gerer-block-banner--edit">
+        <span class="gerer-block-badge gerer-block-badge--edit" aria-hidden="true">M</span>
+        <h2 class="gerer-block-title" id="gerer-modifier-title">Modifier les informations</h2>
+      </div>
+      <div class="gerer-block-body">
+        <p class="gerer-hint">Lieu, mode, détails pour les participants, nombre maximum de participants, et date/heure de début si tu es encore à <strong>plus de 24&nbsp;h</strong> avant le début prévu.</p>
+        <form method="post" action="{{ url_for('page_gerer_seance', seance_id=seance.seance_id) }}" class="gerer-form">
+          <input type="hidden" name="etudiant_id" value="{{ etudiant_id }}" />
+          <input type="hidden" name="action" value="infos" />
+          <div class="gerer-field">
+            <label for="lieu_ou_lien">Lieu ou lien</label>
+            <input
+              type="text"
+              id="lieu_ou_lien"
+              name="lieu_ou_lien"
+              class="gerer-input"
+              value="{{ seance.lieu_ou_lien or '' }}"
+              maxlength="500"
+              placeholder="Salle, adresse ou lien visioconférence"
+              autocomplete="off"
+            />
+          </div>
+          <div class="gerer-field">
+            <label for="mode">Mode</label>
+            <select id="mode" name="mode" class="gerer-input" required>
+              <option value="Présentiel" {% if seance.mode == 'Présentiel' %}selected{% endif %}>Présentiel</option>
+              <option value="En ligne" {% if seance.mode == 'En ligne' %}selected{% endif %}>En ligne</option>
+              <option value="Distanciel" {% if seance.mode == 'Distanciel' %}selected{% endif %}>Distanciel</option>
+            </select>
+          </div>
+          <div class="gerer-field">
+            <label for="description">Détails pour les participants</label>
+            <textarea
+              id="description"
+              name="description"
+              class="gerer-input"
+              maxlength="1000"
+              placeholder="Décris les détails importants pour les participants"
+              rows="4"
+            >{{ seance.description or '' }}</textarea>
+          </div>
+          <div class="gerer-field">
+            <label for="max_participants">Nombre max. de participants</label>
+            <input
+              type="number"
+              id="max_participants"
+              name="max_participants"
+              class="gerer-input"
+              min="1"
+              max="255"
+              step="1"
+              placeholder="Vide = pas de limite"
+              value="{{ seance.max_participants if seance.max_participants is not none else '' }}"
+            />
+            <p class="gerer-field-hint">Doit être ≥ {{ nb_acceptes }} (déjà acceptés). Laisse vide pour illimité.</p>
+          </div>
+          <div class="gerer-field">
+            <label for="debut_datetime">Date et heure de début</label>
+            {% if peut_modifier_debut %}
+              <input
+                type="datetime-local"
+                id="debut_datetime"
+                name="debut_datetime"
+                class="gerer-input gerer-input-datetime"
+                value="{{ debut_input }}"
+                required
+              />
+              <p class="gerer-field-hint">Modifiable uniquement tant qu’il reste plus de 24&nbsp;h avant cette date.</p>
+            {% else %}
+              <p class="gerer-locked-field">{{ seance.debut_date_longue or '—' }} · {{ seance.heure_plage or '—' }}</p>
+              <p class="gerer-field-hint gerer-field-hint--warn">La date ne peut plus être changée (moins de 24&nbsp;h avant le début ou séance passée).</p>
+            {% endif %}
+          </div>
+          <button type="submit" class="btn btn-primary gerer-btn-submit">Enregistrer les informations</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="gerer-block" aria-labelledby="gerer-statut-title">
+      <div class="gerer-block-banner gerer-block-banner--action">
+        <span class="gerer-block-badge gerer-block-badge--action" aria-hidden="true">S</span>
+        <h2 class="gerer-block-title" id="gerer-statut-title">Changer le statut</h2>
+      </div>
+      <div class="gerer-block-body">
+        <p class="gerer-hint">Cycle : en attente → en cours → complète (ou annulée).</p>
+        <form method="post" action="{{ url_for('page_gerer_seance', seance_id=seance.seance_id) }}" class="gerer-form">
+          <input type="hidden" name="etudiant_id" value="{{ etudiant_id }}" />
+          <input type="hidden" name="action" value="statut" />
+          <div class="gerer-field">
+            <label for="nouveau_statut">Nouveau statut</label>
+            <select id="nouveau_statut" name="nouveau_statut" class="gerer-select" required>
+              <option value="En_attente" {% if seance.statut == 'En_attente' %}selected{% endif %}>En attente</option>
+              <option value="En_cours" {% if seance.statut == 'En_cours' %}selected{% endif %}>En cours</option>
+              <option value="Complete" {% if seance.statut == 'Complete' %}selected{% endif %}>Complète</option>
+              <option value="Annulee" {% if seance.statut == 'Annulee' %}selected{% endif %}>Annulée</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary gerer-btn-submit">Enregistrer le statut</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="gerer-block" aria-labelledby="gerer-insc-title">
+      <div class="gerer-block-banner">
+        <span class="gerer-block-badge" aria-hidden="true">P</span>
+        <h2 class="gerer-block-title" id="gerer-insc-title">Demandes et participants</h2>
+      </div>
+      <div class="gerer-block-body gerer-block-body--flush">
+        {% if inscriptions|length == 0 %}
+          <p class="empty gerer-empty">Aucune inscription pour l’instant.</p>
+        {% else %}
+          <ul class="gerer-participant-list">
+            {% for p in inscriptions %}
+              {% set _ini = ((p.prenom or '')[:1] ~ (p.nom or '')[:1])|upper %}
+              <li>
+                <article class="gerer-person-card">
+                  <div class="gerer-person-top">
+                    <div class="gerer-person-avatar" aria-hidden="true">{% if _ini %}{{ _ini }}{% else %}·{% endif %}</div>
+                    <div class="gerer-person-main">
+                      <h3 class="gerer-person-name">{{ p.display }}</h3>
+                      <p class="gerer-person-id">{{ p.email_ulaval or '—' }}{% if p.note %} · Note: {{ p.note }}/4.3{% endif %}</p>
+                      <p class="gerer-person-statut">
+                        <span class="statut-p {{ p.statut }}">{{ p.statut }}</span>
+                        {% if p.date_demande %}
+                          <span class="gerer-person-date">Demande : {{ p.date_demande }}</span>
+                        {% endif %}
+                      </p>
+                    </div>
+                  </div>
+                  {% if p.statut == 'En_attente' %}
+                    <div class="gerer-person-actions">
+                      <form method="post" action="{{ url_for('page_gerer_seance', seance_id=seance.seance_id) }}" class="gerer-inline-form">
+                        <input type="hidden" name="etudiant_id" value="{{ etudiant_id }}" />
+                        <input type="hidden" name="action" value="accepter" />
+                        <input type="hidden" name="demandeur_id" value="{{ p.etudiant_id }}" />
+                        <button type="submit" class="btn btn-ok">Accepter</button>
+                      </form>
+                      <form method="post" action="{{ url_for('page_gerer_seance', seance_id=seance.seance_id) }}" class="gerer-inline-form">
+                        <input type="hidden" name="etudiant_id" value="{{ etudiant_id }}" />
+                        <input type="hidden" name="action" value="refuser" />
+                        <input type="hidden" name="demandeur_id" value="{{ p.etudiant_id }}" />
+                        <button type="submit" class="btn btn-no">Refuser</button>
+                      </form>
+                    </div>
+                  {% endif %}
+                </article>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+</body>
+</html>

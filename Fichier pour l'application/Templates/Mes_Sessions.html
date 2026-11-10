@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mes sessions — StudyMatch</title>
+  <link rel="stylesheet" href="/static/studysync-ul.css" />
+  <style>
+    /* Onglets directement sur le fond de page (crème) */
+    .nav-tabs-bar {
+      padding: 14px 0 20px;
+      background: transparent;
+    }
+
+    .nav-tabs-inner {
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav-tabs-bar .tabs-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .tabs-wrap {
+      display: flex;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--tab-inactive-text);
+      cursor: default;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    a.tab {
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-block;
+      color: inherit;
+    }
+
+    .tab-short {
+      display: none;
+    }
+
+    .tab.active {
+      background: #fff;
+      color: var(--tab-active-text);
+      border: 1px solid #94a3b8;
+      box-shadow: none;
+      padding: 9px 16px;
+      font-weight: 600;
+    }
+
+    /* Pastille or : cercle sur la maquette (légère capsule si 2+ chiffres) */
+    .tab-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      margin-left: 8px;
+      border-radius: 999px;
+      background: var(--tab-badge-bg);
+      color: var(--tab-badge-text);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .tab.active .tab-count {
+      font-weight: 800;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: .15s ease;
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--red-dark); }
+
+    .btn-header-cta {
+      background: var(--ul-rouge);
+      color: #fff;
+      border-color: var(--ul-rouge);
+    }
+    .btn-header-cta:hover {
+      background: var(--ul-rouge-fonce);
+      border-color: var(--ul-rouge-fonce);
+    }
+
+    .btn-light {
+      background: #fff;
+      color: var(--text);
+      border-color: #d8dce2;
+    }
+    .btn-light:hover { background: #f9fafb; }
+
+    .btn-black {
+      background: var(--ul-noir);
+      color: #fff;
+      border-color: var(--ul-noir);
+    }
+    .btn-black:hover {
+      background: var(--ul-rouge-fonce);
+      border-color: var(--ul-rouge-fonce);
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--ul-rouge);
+      border: 1px solid var(--ul-rouge);
+    }
+    .btn-outline:hover {
+      background: var(--ul-rouge-doux);
+      border-color: var(--ul-rouge-fonce);
+    }
+
+    /* Marge bas : évite que le bouton d’aide fixe recouvre « Gérer » sur la dernière carte. */
+    .main-content {
+      padding-top: 4px;
+      padding-bottom: 88px;
+    }
+
+    /* Cartes de regroupement : sessions créées vs sessions à évaluer */
+    .page-panel {
+      background: var(--panel-rouge-pale);
+      border: 1px solid rgba(227, 5, 19, 0.18);
+      border-radius: 16px;
+      padding: 22px 22px 24px;
+      margin-bottom: 22px;
+      box-shadow: 0 1px 3px rgba(227, 5, 19, 0.06), 0 4px 14px rgba(227, 5, 19, 0.05);
+    }
+
+    .page-panel > .past-title {
+      margin-top: 0;
+    }
+
+    .page-panel .past-title {
+      margin-bottom: 14px;
+    }
+
+    .page-panel .cards {
+      margin-top: 0;
+    }
+
+    .page-panel .past-list {
+      margin-top: 0;
+    }
+
+    .page-panel .empty-box:last-child {
+      margin-bottom: 0;
+    }
+
+    .page-panel .empty-box {
+      background: rgba(255, 255, 255, 0.92);
+      border-color: rgba(227, 5, 19, 0.2);
+    }
+
+    .warning-box {
+      background: var(--ul-rouge-doux);
+      border: 1px solid rgba(227, 5, 19, 0.28);
+      color: #7a050d;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .empty-box {
+      border: 1px dashed #e5e7eb;
+      background: var(--phrase-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      color: #4b5563;
+      margin-bottom: 14px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .session-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 20px 20px 18px;
+      box-shadow: 0 1px 2px rgba(17, 24, 39, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .session-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .session-code {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+
+    .session-course-title {
+      color: #4b5563;
+      font-size: 15px;
+      font-weight: 400;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    .status-chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #166534;
+      background: #e8f8ed;
+      border: 1px solid #d4f2dc;
+      white-space: nowrap;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .chip {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--chip-text);
+      background: var(--chip);
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 4px 9px;
+    }
+
+    .chip-warn {
+      font-size: 12px;
+      font-weight: 700;
+      color: #7a050d;
+      background: var(--ul-rouge-doux);
+      border: 1px solid rgba(227, 5, 19, 0.35);
+      border-radius: 999px;
+      padding: 6px 12px;
+    }
+
+    .tag-neutral {
+      font-size: 11px;
+      font-weight: 600;
+      color: #4b5563;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 4px 10px;
+      display: inline-block;
+      margin-top: 8px;
+    }
+
+    .session-subject {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #374151;
+      line-height: 1.5;
+      background: var(--phrase-bg);
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .session-subject strong {
+      font-weight: 700;
+      color: var(--ul-noir);
+    }
+
+    .session-organizer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .org-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      color: #374151;
+      font-size: 13px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .org-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .org-rating {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .org-rating .star {
+      color: var(--ul-or-fonce);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .meta-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+      background: var(--phrase-bg);
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .meta-item {
+      font-size: 14px;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 400;
+    }
+
+    .meta-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      color: #6b7280;
+    }
+
+    .meta-icon svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .card-footer {
+      margin-top: 4px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .participants {
+      font-size: 14px;
+      color: var(--ul-noir);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--phrase-bg);
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .participants svg {
+      width: 18px;
+      height: 18px;
+      color: #6b7280;
+      flex-shrink: 0;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .card-actions .btn {
+      flex: 1 1 auto;
+      text-align: center;
+      justify-content: center;
+      min-width: 120px;
+    }
+
+    @media (min-width: 560px) {
+      .card-actions {
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+      }
+      .card-actions .btn {
+        flex: 0 0 auto;
+        min-width: 130px;
+      }
+    }
+
+    .past-title {
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ul-noir);
+    }
+
+    .past-eval-hint {
+      margin: -4px 0 14px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .past-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .past-row {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .past-row-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .past-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+      background: var(--phrase-bg);
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: inline-block;
+      border: 1px solid #e5e7eb;
+    }
+
+    .score-chip {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--chip-text);
+      background: var(--chip);
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 4px 8px;
+    }
+
+    .help-fab {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .help-popover {
+      position: relative;
+      max-width: 260px;
+      background: var(--phrase-bg);
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px 36px 12px 14px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+      font-size: 13px;
+      line-height: 1.45;
+      color: #374151;
+    }
+
+    .help-popover.is-hidden {
+      display: none;
+    }
+
+    .help-popover-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      color: #6b7280;
+      border-radius: 6px;
+    }
+    .help-popover-close:hover {
+      background: var(--ul-rouge-doux);
+      color: var(--ul-noir);
+    }
+
+    .help-fab-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      color: #374151;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    }
+    .help-fab-btn:hover {
+      background: #f9fafb;
+    }
+
+    dialog {
+      width: min(760px, 95vw);
+      border: none;
+      border-radius: 16px;
+      padding: 0;
+      box-shadow: 0 28px 70px rgba(0,0,0,.25);
+    }
+    dialog::backdrop { background: rgba(17, 24, 39, 0.55); }
+
+    /* Modal « Créer une session » — sobre, une touche UL (bandeau rouge) */
+    #createDialog {
+      overflow: hidden;
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+    }
+
+    #createDialog .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 22px;
+      background: #fff;
+      border-top: 3px solid var(--ul-rouge);
+      border-bottom: 1px solid #e8eaee;
+    }
+
+    #createDialog .modal-title {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--ul-rouge);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    #createDialog .modal-head .btn-light {
+      border-color: #d1d5db;
+      color: #374151;
+    }
+    #createDialog .modal-head .btn-light:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+      color: #111827;
+    }
+
+    #createDialog .modal-body {
+      background: #f3f1ed;
+      padding: 22px 22px 24px;
+    }
+
+    #createDialog .form-hint {
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 400;
+      color: #52504c;
+      line-height: 1.55;
+      background: var(--field-or-leger);
+      border-radius: 8px;
+      border: 1px solid #d5d2cc;
+    }
+
+    #createDialog .form-hint code {
+      font-size: 12px;
+      font-weight: 600;
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      background: #ddd9d3;
+      color: #3d3a36;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    #createDialog .field label {
+      color: #374151;
+    }
+
+    #createDialog .field-help {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.45;
+    }
+
+    #createDialog .label-optional {
+      font-weight: 500;
+      color: #6b7280;
+    }
+
+    #createDialog .field input,
+    #createDialog .field select,
+    #createDialog .field textarea {
+      background: var(--field-or-leger);
+      border-color: #cfccc6;
+      color: #292724;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    #createDialog .field textarea {
+      min-height: 96px;
+    }
+
+    #createDialog .field input:focus,
+    #createDialog .field select:focus,
+    #createDialog .field textarea:focus {
+      outline: none;
+      background: var(--field-or-focus);
+      border-color: var(--ul-rouge-fonce);
+      box-shadow: 0 0 0 1px rgba(227, 5, 19, 0.12);
+    }
+
+    #createDialog .form-actions {
+      border-top: 1px solid #e8eaee;
+      padding-top: 18px;
+      margin-top: 18px;
+      background: transparent;
+    }
+
+    #createDialog .form-actions .btn-primary {
+      min-width: 112px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .modal-body { background: #fff; padding: 16px; }
+
+    .form-hint {
+      margin: 0 0 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .form-hint code {
+      font-size: 12px;
+      background: var(--phrase-bg);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 720px) {
+      .form-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+
+    .field input, .field select, .field textarea {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 10px 11px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    .field textarea { min-height: 88px; resize: vertical; }
+
+    .form-error {
+      display: none;
+      margin-top: 10px;
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(227, 5, 19, 0.3);
+      background: var(--ul-rouge-doux);
+      color: #7a050d;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .form-error.visible { display: block; }
+
+    .form-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .layout-max {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .nav-tabs-bar {
+        padding: 10px 0 14px;
+      }
+      .tab { padding: 8px 14px; font-size: 12px; }
+      .tab.active { padding: 7px 12px; }
+      .tab-count { min-width: 18px; height: 18px; padding: 0 4px; font-size: 10px; margin-left: 6px; }
+      .btn { padding: 8px 10px; font-size: 12px; }
+      .nav-tabs-bar .tabs-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start;
+        scrollbar-width: thin;
+      }
+      .tab-full { display: none; }
+      .tab-short { display: inline; }
+    }
+
+    .design-preview-banner-wrap {
+      background: linear-gradient(90deg, #fff7ed, #ffedd5);
+      border-bottom: 1px solid #fdba74;
+      color: #7c2d12;
+      font-size: 13px;
+      padding: 10px 0;
+      line-height: 1.45;
+    }
+    .design-preview-banner-inner {
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+    .design-preview-banner-inner code {
+      font-size: 0.9em;
+      background: rgba(255, 255, 255, 0.65);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+{% set header_active = 'mes_sessions' %}
+{% set header_creer = 'button' %}
+{% include 'partials/_header_studymatch.html' %}
+
+  <nav class="nav-tabs-bar" aria-label="Navigation des sessions">
+    <div class="layout-max nav-tabs-inner">
+      <div class="tabs-wrap">
+        <div class="tabs">
+          <a class="tab" href="{{ url_for('page_disponibilite') }}">Disponibles</a>
+          <a class="tab" href="{{ url_for('page_mes_participations') }}">
+         <span class="tab-full">Mes participations</span><span class="tab-short">Participations</span>
+         </a>
+          <span class="tab active" role="presentation">Mes sessions <span class="tab-count">{{ sessions|length }}</span></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="layout-max main-content" style="padding-top:12px;padding-bottom:0;">
+        {% for category, message in messages %}
+          {% if category != 'success' %}
+            <div class="warning-box" role="alert">{{ message }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% if design_preview %}
+  <div class="design-preview-banner-wrap" role="status">
+    <div class="layout-max design-preview-banner-inner">
+      <strong>Aperçu design</strong> — Cette page utilise des données fictives (aucune base de données). Tu y accèdes avec <code>?design=1</code> dans l’URL. Pour charger tes vraies sessions, enlève <code>design=1</code> et passe <code>etudiant_id=…</code>.
+    </div>
+  </div>
+  {% endif %}
+
+  <main class="layout-max main-content">
+    {% if db_error %}
+      <div class="warning-box">
+        Impossible de charger les sessions pour le moment. Vérifie la connexion à la base de données puis actualise la page.
+      </div>
+    {% endif %}
+
+    <section class="page-panel" aria-label="Mes sessions">
+    {% if sessions|length == 0 %}
+      <div class="empty-box">
+        <strong>Aucune session créée pour l’instant.</strong><br />
+        Clique sur “Créer une session” pour en ajouter une.
+      </div>
+    {% else %}
+      <div class="cards">
+        {% for s in sessions %}
+          <article class="session-card">
+            <div class="session-head">
+              <div>
+                <h2 class="session-code">{{ s.csigle }}</h2>
+                {% if s.nom_cours %}
+                  <div class="session-course-title">{{ s.nom_cours }}</div>
+                {% endif %}
+              </div>
+              <span class="status-chip">{{ s.statut_label }}</span>
+            </div>
+
+            {% if s.demandes_en_attente and s.demandes_en_attente > 0 %}
+              <div class="chip-warn">{{ s.demandes_en_attente }} demande{% if s.demandes_en_attente > 1 %}s{% endif %} en attente</div>
+            {% endif %}
+
+            <div class="meta-list">
+              {% if s.debut_date_longue %}
+                <div class="meta-item">
+                  <span class="meta-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+                  <span>{{ s.debut_date_longue }}</span>
+                </div>
+              {% elif s.debut_datetime %}
+                <div class="meta-item">
+                  <span class="meta-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+                  <span>{{ s.debut_datetime }}</span>
+                </div>
+              {% endif %}
+              {% if s.heure_plage %}
+                <div class="meta-item">
+                  <span class="meta-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 3"/></svg></span>
+                  <span>{{ s.heure_plage }}</span>
+                </div>
+              {% endif %}
+              {% if s.lieu_ou_lien %}
+                <div class="meta-item">
+                  <span class="meta-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s7-4.35 7-11a7 7 0 1 0-14 0c0 6.65 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+                  <span>{{ s.lieu_ou_lien }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            {% if s.description|trim %}
+              <div class="session-subject"><strong>Détails pour les participants :</strong> {{ s.description }}</div>
+            {% endif %}
+
+            {% if s.description|trim or s.mode == 'Présentiel' or s.mode == 'Hybride' %}
+              <span class="tag-neutral">Préparation requise</span>
+            {% endif %}
+
+            <div class="session-organizer">
+              <span class="org-avatar" aria-hidden="true">{{ s.createur_initiales }}</span>
+              <div>
+                <div class="org-name">{{ s.createur_display or 'Organisateur' }}</div>
+                {% if s.createur_note is not none %}
+                  <div class="org-rating"><span class="star" aria-hidden="true">★</span> {{ '%.1f'|format(s.createur_note) }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="card-footer">
+              {% if s.participants_acceptes is not none and s.max_participants %}
+                {% set rest = (s.max_participants - s.participants_acceptes) if s.max_participants >= s.participants_acceptes else 0 %}
+                <div class="participants">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <span>{{ s.participants_acceptes }}/{{ s.max_participants }} ({{ rest }} place{% if rest != 1 %}s{% endif %} restante{% if rest != 1 %}s{% endif %})</span>
+                </div>
+              {% elif s.participants_acceptes is not none %}
+                <div class="participants">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <span>{{ s.participants_acceptes }} participant{% if s.participants_acceptes != 1 %}s{% endif %}</span>
+                </div>
+              {% endif %}
+
+              <div class="card-actions">
+                <a class="btn btn-black" href="{{ url_for('page_gerer_seance', seance_id=s.seance_id, etudiant_id=etudiant_id) }}">Gérer</a>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+    </section>
+
+    <section class="page-panel" aria-labelledby="sessions-passees-heading">
+      <h2 class="past-title" id="sessions-passees-heading">Sessions passées à évaluer</h2>
+      <p class="past-eval-hint">Tu peux évaluer uniquement les séances <strong>déjà terminées</strong> .</p>
+
+    {% if sessions_passees is not defined or sessions_passees|length == 0 %}
+      <div class="empty-box">Aucune session passée à évaluer.</div>
+    {% else %}
+      <div class="past-list">
+        {% for p in sessions_passees %}
+          <article class="past-row">
+            <div>
+              <strong>{{ p.csigle }}{% if p.nom_cours %} - {{ p.nom_cours }}{% endif %}</strong>
+              <div class="past-meta">
+                {% if p.debut_relatif %}{{ p.debut_relatif }}{% else %}Début : {{ p.debut_datetime }}{% endif %}
+              </div>
+            </div>
+            <div class="past-row-actions">
+              {% if p.moyenne_note is not none %}
+                <span class="score-chip">Moy.: {{ '%.2f'|format(p.moyenne_note) }}/5</span>
+              {% endif %}
+              {% if design_preview %}
+              <a class="btn btn-light" href="{{ url_for('page_evaluer_seance', seance_id=p.seance_id, etudiant_id=etudiant_id, design='1') }}">Évaluer</a>
+              {% else %}
+              <a class="btn btn-light" href="{{ url_for('page_evaluer_seance', seance_id=p.seance_id, etudiant_id=etudiant_id) }}">Évaluer</a>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+    </section>
+
+    <section class="page-panel" aria-labelledby="sessions-annulees-heading">
+      <h2 class="past-title" id="sessions-annulees-heading">Sessions annulées</h2>
+      {% if sessions_annulees is not defined or sessions_annulees|length == 0 %}
+        <div class="empty-box">Aucune session annulée.</div>
+      {% else %}
+        <div class="past-list">
+          {% for a in sessions_annulees %}
+            <article class="past-row">
+              <div>
+                <strong>{{ a.csigle }}{% if a.nom_cours %} - {{ a.nom_cours }}{% endif %}</strong>
+                <div class="past-meta">
+                  {% if a.debut_date_longue %}{{ a.debut_date_longue }}{% else %}Début : {{ a.debut_datetime }}{% endif %}
+                </div>
+              </div>
+              <div class="past-row-actions">
+                <a class="btn btn-light" href="{{ url_for('page_gerer_seance', seance_id=a.seance_id, etudiant_id=etudiant_id) }}">Voir</a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+  </main>
+
+  <dialog id="createDialog">
+    <div class="modal-head">
+      <h3 class="modal-title">Créer une session</h3>
+      <button class="btn btn-light" id="closeCreateTopBtn" type="button">Fermer</button>
+    </div>
+    <div class="modal-body">
+      <form id="createSessionForm" method="post" action="/mes-sessions/creer?etudiant_id={{ etudiant_id }}">
+        <input type="hidden" name="etudiant_id" value="{{ etudiant_id }}" />
+
+        <p class="form-hint">Toute nouvelle séance est créée en statut <strong>en attente</strong> ; tu pourras la passer en <strong>en cours</strong> puis <strong>complète</strong> après (écran de gestion).</p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="csigle">Cours</label>
+            {% if cours_choices and cours_choices|length > 0 %}
+            <select id="csigle" name="csigle" required>
+              <option value="">— Choisir un cours —</option>
+              {% for c in cours_choices %}
+              <option value="{{ c.csigle }}">{{ c.csigle }}{% if c.nom_cours %} — {{ c.nom_cours }}{% endif %}</option>
+              {% endfor %}
+            </select>
+            {% else %}
+            <input id="csigle" name="csigle" maxlength="16" required placeholder="ex. IFT-1004" />
+            <p class="field-help">Aucun cours n’a pu être chargé depuis la base. Vérifie la connexion ou remplis la table <strong>Cours</strong> (ex. <code>python insertiondata.py</code>).</p>
+            {% endif %}
+          </div>
+          <div class="field">
+            <label for="debut_datetime">Date/heure de début</label>
+            <input id="debut_datetime" name="debut_datetime" type="datetime-local" required />
+          </div>
+          <div class="field">
+            <label for="max_participants">Max participants</label>
+            <input id="max_participants" name="max_participants" type="number" min="1" max="255" />
+          </div>
+          <div class="field">
+            <label for="mode">Mode</label>
+            <select id="mode" name="mode">
+              <option value="">(optionnel)</option>
+              <option value="Présentiel">Présentiel</option>
+              <option value="En ligne">En ligne</option>
+              <option value="Hybride">Hybride</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:10px;">
+          <label for="lieu_ou_lien">Lieu ou lien</label>
+          <input id="lieu_ou_lien" name="lieu_ou_lien" />
+        </div>
+        <div class="field" style="margin-top:10px;">
+          <label for="description">Commentaires et spécifications <span class="label-optional">(optionnel)</span></label>
+          <p class="field-help">Indique ce que les participants doivent savoir (matériel, chapitres, consignes…). Ce bloc n’apparaît sur la carte que si tu remplis ce champ.</p>
+          <textarea id="description" name="description" rows="4" placeholder="Ex. : apporter le chapitre 4, exercices 12 à 18…"></textarea>
+        </div>
+
+        <div id="formError" class="form-error" role="alert"></div>
+
+        <div class="form-actions">
+          <button class="btn btn-light" id="closeCreateBottomBtn" type="button">Annuler</button>
+          <button class="btn btn-primary" type="submit">Créer</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <div class="help-fab">
+    <div class="help-popover" id="helpLangPopover" role="status">
+      <button type="button" class="help-popover-close" id="helpLangClose" aria-label="Fermer">×</button>
+      <p style="margin:0;">Changez de langue à tout moment depuis le menu d'aide</p>
+    </div>
+    <button type="button" class="help-fab-btn" id="helpLangToggle" aria-label="Aide">?</button>
+  </div>
+
+  <script src="/static/MesSessions.js"></script>
+  
+  <!-- Désactiver les dates passées dans le calendrier de création -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const input = document.getElementById('debut_datetime');
+      if (input) {
+        // Formater la date actuelle en heure locale (YYYY-MM-DDTHH:mm)
+        // Important: ne pas utiliser toISOString() car ça convertit en UTC
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const minValue = `${year}-${month}-${day}T${hours}:${minutes}`;
+        input.min = minValue;
+      }
+    });
+  </script>
+</body>
+</html>

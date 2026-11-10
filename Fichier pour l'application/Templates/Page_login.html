@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - StudyMatch</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='studysync-ul.css') }}">
+</head>
+<body class="css-diari auth-page">
+
+
+    <main class="auth">
+        <div class="auth__container">
+            <section class="card auth__card">
+
+                <h2 class="auth__title">Connexion</h2>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    <div class="messages">
+                      {% for category, message in messages %}
+                        <p class="message message--{{ category }}">{{ message|safe }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+
+
+                <form id="loginForm" class="form" method="POST" action="{{ url_for('page_login') }}">
+                    <div class="form__group">
+                        <label for="email" class="form__label">Courriel universitaire</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email_ulaval"
+                            placeholder="idul@ulaval.ca"
+                            required
+                            class="form__input"
+                        />
+                    </div>
+
+                    <div class="form__group">
+                        <label for="password" class="form__label">Mot de passe</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="mot_de_passe"
+                            placeholder="••••••••"
+                            required
+                            class="form__input"
+                        />
+                    </div>
+
+                    <button type="submit" class="button button--primary button--full">
+                        Se connecter
+                    </button>
+                    <p class="form__footer">
+        <a href="{{ url_for('page_forgot_password') }}" class="link">
+            Mot de passe oublié ?
+        </a>
+    </p>
+
+                    <p class="form__footer">
+                        Pas encore de compte ?
+                        <a href="{{ url_for('page_signup') }}" class="link">Inscrivez-vous</a>
+                    </p>
+                </form>
+
+                <div class="auth__back">
+                    <a href="{{ url_for('page_accueil') }}" class="link link--muted">← Retour à l'accueil</a>
+
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='Page_login.js') }}"></script>
+</body>
+</html>

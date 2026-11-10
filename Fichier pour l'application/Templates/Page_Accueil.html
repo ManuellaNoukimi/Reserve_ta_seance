@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMatch — Page d'accueil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='studysync-ul.css') }}">
+</head>
+<body class="css-diari">
+    <!-- ===== HEADER / HERO ===== -->
+    <header class="landing-header">
+        <div class="container">
+
+            {% set brand_size = 'hero' %}
+            {% include 'partials/_brand_studymatch.html' %}
+
+            <!-- Hero -->
+            <div class="landing-hero">
+                <h2 class="landing-hero__title">
+                    Révisez mieux,
+                    <br>
+                    <span class="landing-hero__highlight">ensemble</span>
+                </h2>
+                <p class="landing-hero__text">
+                    Trouvez des étudiants motivés de l'Université Laval pour organiser des séances de révision
+                    efficaces, même si vous ne vous connaissez pas encore.
+                </p>
+                <div class="landing-hero__actions">
+                    <a href="{{ url_for('page_login') }}" class="button button--primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                            <polyline points="10 17 15 12 10 7"/>
+                            <line x1="15" x2="3" y1="12" y2="12"/>
+                        </svg>
+                        Connexion
+                    </a>
+                    <a href="{{ url_for('page_signup') }}" class="button button--secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <line x1="19" x2="19" y1="8" y2="14"/>
+                            <line x1="22" x2="16" y1="11" y2="11"/>
+                        </svg>
+                        Inscription
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ===== COMMENT ÇA FONCTIONNE ===== -->
+    <section class="landing-section">
+        <div class="container">
+            <div class="section-header">
+                <h3 class="section-title">Comment ça fonctionne ?</h3>
+                <p class="section-description">Une plateforme simple pour des révisions efficaces</p>
+            </div>
+
+            <div class="features-grid">
+                <article class="feature-card">
+                    <div class="feature-card__icon feature-card__icon--red">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                            <line x1="16" x2="16" y1="2" y2="6"/>
+                            <line x1="8" x2="8" y1="2" y2="6"/>
+                            <line x1="3" x2="21" y1="10" y2="10"/>
+                        </svg>
+                    </div>
+                    <h4 class="feature-card__title">Créez ou rejoignez</h4>
+                    <p class="feature-card__text">
+                        Créez une session pour votre cours ou parcourez les sessions existantes qui correspondent à vos besoins.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-card__icon feature-card__icon--blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <h4 class="feature-card__title">Critères personnalisés</h4>
+                    <p class="feature-card__text">
+                        Choisissez le type de session, le niveau de préparation requis et le nombre de participants.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-card__icon feature-card__icon--green">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                    <h4 class="feature-card__title">Système de confiance</h4>
+                    <p class="feature-card__text">
+                        Évaluations anonymes après chaque session pour maintenir une communauté de qualité et responsable.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== POURQUOI STUDYMATCH ===== -->
+    <section class="landing-section landing-section--white">
+        <div class="container">
+            <div class="section-header">
+                <h3 class="section-title">Pourquoi StudyMatch ?</h3>
+            </div>
+
+            <div class="benefits-grid">
+                <article class="benefit-item">
+                    <div class="benefit-item__icon benefit-item__icon--purple">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="benefit-item__title">Plus efficace que réviser seul</h4>
+                        <p class="benefit-item__text">
+                            La présence d'autres étudiants motivés vous aide à rester concentré(e) et productif(ve).
+                        </p>
+                    </div>
+                </article>
+
+                <article class="benefit-item">
+                    <div class="benefit-item__icon benefit-item__icon--orange">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="benefit-item__title">Sans les distractions</h4>
+                        <p class="benefit-item__text">
+                            Réviser avec des amis peut être distrayant. Étudiez avec des personnes qui ont les mêmes objectifs.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="benefit-item">
+                    <div class="benefit-item__icon benefit-item__icon--blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="benefit-item__title">Partagez vos connaissances</h4>
+                        <p class="benefit-item__text">
+                            Apprenez de vos pairs et consolidez vos connaissances en expliquant aux autres.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="benefit-item">
+                    <div class="benefit-item__icon benefit-item__icon--green">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="benefit-item__title">Communauté de confiance</h4>
+                        <p class="benefit-item__text">
+                            Le système d'évaluation garantit que seuls les étudiants sérieux et fiables participent.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="landing-footer">
+        <div class="container landing-footer__content">
+            <p>© 2026 StudyMatch — Plateforme étudiante de l'Université Laval</p>
+
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='Page_accueil.js') }}"></script>
+</body>
+</html>

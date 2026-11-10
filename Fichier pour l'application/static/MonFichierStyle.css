@@ -1,0 +1,635 @@
+/* Rétrocompatibilité : le thème complet vit dans studymatch-ul.css */
+@import url("studysync-ul.css");
+
+/* ---------- Reset & Base ---------- */
+.css-diari,
+.css-diari * ,
+.css-diari *::before,
+.css-diari *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body.css-diari {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #111827;
+    line-height: 1.6;
+    background: linear-gradient(to bottom, #fef2f2, #ffffff);
+    min-height: 100vh;
+}
+
+/* ---------- Layout ---------- */
+.css-diari .container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* ---------- Header / Hero ---------- */
+.css-diari .landing-header {
+    padding: 2rem 0;
+}
+
+/* Logo / Brand */
+.css-diari .landing-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 3rem;
+}
+
+.css-diari .brand__icon {
+    width: 3rem;
+    height: 3rem;
+    background-color: #dc2626;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.css-diari .brand__icon svg {
+    stroke: white;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.css-diari .brand__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.css-diari .brand__subtitle {
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+/* Hero text */
+.css-diari .landing-hero {
+    max-width: 56rem;
+    margin: 0 auto;
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.css-diari .landing-hero__title {
+    font-size: clamp(2.5rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: #111827;
+    margin-bottom: 1.5rem;
+}
+
+.css-diari .landing-hero__highlight {
+    color: #dc2626;
+}
+
+.css-diari .landing-hero__text {
+    font-size: 1.25rem;
+    color: #4b5563;
+    max-width: 42rem;
+    margin: 0 auto 1.5rem;
+    line-height: 1.7;
+}
+
+.css-diari .landing-hero__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-top: 1rem;
+}
+
+/* ---------- Buttons ---------- */
+.css-diari .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.css-diari .button--primary {
+    background-color: #dc2626;
+    color: #ffffff;
+}
+
+.css-diari .button--primary:hover {
+    background-color: #b91c1c;
+}
+
+.css-diari .button--secondary {
+    background-color: #ffffff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.css-diari .button--secondary:hover {
+    background-color: #f9fafb;
+}
+
+/* ---------- Features Section ---------- */
+.css-diari .landing-section {
+    padding: 4rem 0;
+}
+
+.css-diari .landing-section--white {
+    background-color: #ffffff;
+}
+
+.css-diari .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.css-diari .section-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.75rem;
+}
+
+.css-diari .section-description {
+    color: #4b5563;
+    font-size: 1rem;
+}
+
+/* Feature cards grid */
+.css-diari .features-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
+    max-width: 64rem;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .css-diari .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.css-diari .feature-card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem;
+}
+
+.css-diari .feature-card__icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.css-diari .feature-card__icon--red  { background-color: #fee2e2; }
+.css-diari .feature-card__icon--blue { background-color: #dbeafe; }
+.css-diari .feature-card__icon--green { background-color: #dcfce7; }
+
+.css-diari .feature-card__icon svg {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.css-diari .feature-card__icon--red  svg { stroke: #dc2626; }
+.css-diari .feature-card__icon--blue svg { stroke: #2563eb; }
+.css-diari .feature-card__icon--green svg { stroke: #16a34a; }
+
+.css-diari .feature-card__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.css-diari .feature-card__text {
+    color: #4b5563;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+/* ---------- Benefits Section ---------- */
+.css-diari .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 56rem;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .css-diari .benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.css-diari .benefit-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.css-diari .benefit-item__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.css-diari .benefit-item__icon--purple { background-color: #f3e8ff; }
+.css-diari .benefit-item__icon--orange { background-color: #ffedd5; }
+.css-diari .benefit-item__icon--blue   { background-color: #dbeafe; }
+.css-diari .benefit-item__icon--green  { background-color: #dcfce7; }
+
+.css-diari .benefit-item__icon svg {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.css-diari .benefit-item__icon--purple svg { stroke: #9333ea; }
+.css-diari .benefit-item__icon--orange svg { stroke: #ea580c; }
+.css-diari .benefit-item__icon--blue   svg { stroke: #2563eb; }
+.css-diari .benefit-item__icon--green  svg { stroke: #16a34a; }
+
+.css-diari .benefit-item__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.css-diari .benefit-item__text {
+    font-size: 0.875rem;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+/* ---------- Footer ---------- */
+.css-diari .landing-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 2rem 0;
+}
+
+.css-diari .landing-footer__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+@media (min-width: 768px) {
+    .css-diari .landing-footer__content {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.css-diari .landing-footer__links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.css-diari .landing-footer__links a {
+    color: #4b5563;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.css-diari .landing-footer__links a:hover {
+    color: #111827;
+}
+
+/* ---------- Auth Pages ---------- */
+body.css-diari.auth-page {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #fef2f2, #ffffff);
+}
+
+.css-diari .auth {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.css-diari .auth__container {
+    width: 100%;
+    max-width: 32rem;
+}
+
+.css-diari .auth__card {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(6px);
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(17, 24, 39, 0.08);
+    padding: 2rem;
+}
+
+.css-diari .auth__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.css-diari .auth__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+}
+
+.css-diari .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.css-diari .form__group {
+    display: flex;
+    flex-direction: column;
+}
+
+.css-diari .form__label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.45rem;
+}
+
+.css-diari .form__input,
+.css-diari .form__select {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    color: #111827;
+    font-size: 1rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.css-diari .form__input::placeholder {
+    color: #9ca3af;
+}
+
+.css-diari .form__input:focus,
+.css-diari .form__select:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.10);
+    background: #fff;
+}
+
+.css-diari .form__select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.css-diari .button--full {
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.css-diari .form__footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-top: 0.25rem;
+}
+
+.css-diari .auth__back {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.css-diari .link {
+    color: #dc2626;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.css-diari .link:hover {
+    text-decoration: underline;
+}
+
+.css-diari .link--muted {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.css-diari .link--muted:hover {
+    color: #111827;
+    text-decoration: none;
+}
+
+/* Messages Flask */
+.css-diari .messages {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.css-diari .message {
+    border-radius: 0.75rem;
+    padding: 0.85rem 1rem;
+    font-size: 0.92rem;
+    border: 1px solid transparent;
+}
+
+.css-diari .message--error {
+    background: #fef2f2;
+    color: #991b1b;
+    border-color: #fecaca;
+}
+
+.css-diari .message--success {
+    background: #ecfdf5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.css-diari .message--info {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+
+/* Petits ajustements responsive */
+@media (max-width: 640px) {
+    .css-diari .auth {
+        padding: 1.25rem 0.9rem;
+    }
+
+    .css-diari .auth__card {
+        padding: 1.5rem 1.25rem;
+        border-radius: 0.9rem;
+    }
+
+    .css-diari .auth__title {
+        font-size: 1.5rem;
+    }
+
+    .css-diari .brand__title {
+        font-size: 1.3rem;
+    }
+}
+
+.profile-main-container-h {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+    background-color: #f8f9fa;
+}
+
+.profile-content-wrapper-h {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.back-link-h {
+    text-decoration: none;
+    color: var(--ul-noir);
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-card-centered-h {
+    background: white;
+    border-radius: 12px;
+    padding: 35px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+/* --- Styles internes --- */
+.profile-avatar-h {
+    width: 90px;
+    height: 90px;
+    background: var(--ul-or-clair);
+    color: var(--ul-or-fonce);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 2.2rem;
+    font-weight: 800;
+    border: 3px solid var(--ul-or);
+}
+
+.profile-reliability-h {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1px solid var(--ul-or);
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.profile-details-list-h {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.detail-item-h {
+    margin-bottom: 20px;
+}
+
+.detail-label-h {
+    display: block;
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 2px;
+}
+
+.detail-value-h {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ul-noir);
+}
+
+.status-online-text-h {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+/* --- SECTION BOUTONS (EXTÉRIEURS) --- */
+.profile-actions-outside-h {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.btn-settings-h, .btn-logout-h {
+    flex: 1;
+    padding: 13px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: opacity 0.2s;
+}
+
+.btn-settings-h {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.btn-logout-h {
+    background-color: #dc2626;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-settings-h:hover, .btn-logout-h:hover {
+    opacity: 0.85;
+}

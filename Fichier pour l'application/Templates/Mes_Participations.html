@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mes Participations — StudyMatch UL</title>
+    <link rel="stylesheet" href="/static/studysync-ul.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="page-disponibilite">
+    <!--  <header>
+        <div id="header-left">
+            <h1 style="color:var(--ul-rouge)">StudyMatch UL</h1>
+            <p>Université Laval</p>
+        </div>
+        <div class="user-profile-header">
+            <a href="{{ url_for('page_mon_profil', etudiant_id=etudiant_id) }}" class="btn-profil-top">
+                <i class="fa-solid fa-circle-user"></i> Mon Profil
+            </a>
+        </div>
+    </header> -->
+{% set header_active = 'participations' %}
+{% set header_creer = 'button' %}
+{% include 'partials/_header_studymatch.html' %}
+    <nav id="onglets">
+<a href="{{ url_for('page_disponibilite') }}" class="onglet">Disponibles</a>
+  <button class="onglet actif"
+          type="button"
+          onclick="window.location.href='{{ url_for('page_mes_participations') }}'">
+    Mes participations
+  </button>
+
+  <a href="{{ url_for('page_mes_sessions') }}" class="onglet">Mes sessions</a>
+</nav>
+
+    <main class="layout-max participations-grid">
+        {% if participations|length == 0 %}
+            <p class="empty-msg">Vous n'êtes inscrit(e) à aucune séance pour le moment.</p>
+        {% else %}
+            {% for p in participations %}
+            <article class="session-card">
+                <h3>{{ p.nom_cours }}{% if p.csigle %} ({{ p.csigle }}){% endif %}</h3>
+                <div class="session-meta">
+                    <div><strong>Mode</strong> {{ p.mode or '—' }}</div>
+                    <div><strong>Date</strong> {{ p.debut_date or '—' }}</div>
+                    <div><strong>Lieu / lien</strong> {{ p.lieu_ou_lien or '—' }}</div>
+                </div>
+                <div class="session-actions" style="margin-top: 14px;">
+                    {% if p.peut_evaluer %}
+                    <a href="{{ url_for('page_evaluer_seance', seance_id=p.seance_id, etudiant_id=etudiant_id) }}" class="btn btn-light">Évaluer</a>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        {% endif %}
+    </main>
+
+    <dialog id="evalPresenceModal" class="panel" style="max-width:450px; border-radius:var(--radius); padding:30px;">
+        <h2 style="color:var(--ul-rouge); margin-bottom:10px;">Évaluer la séance</h2>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:20px;">
+            Vos évaluations sont anonymes et aident à maintenir la confiance dans la communauté.
+        </p>
+
+        <form id="evalPresenceForm" method="POST" action="/api/evaluer-presence">
+            <p><strong>L'organisateur était-il présent ?</strong></p>
+            <div class="presence-eval-box">
+                <label title="Présent"><input type="radio" name="presence" value="1" required> 👍</label>
+                <label title="Absent"><input type="radio" name="presence" value="0" required> 👎</label>
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:20px;">
+                <button type="submit" class="btn btn-primary" style="flex:1;">Soumettre</button>
+                <button type="button" class="btn btn-light" onclick="this.closest('dialog').close()" style="flex:1;">Plus tard</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="/static/MesParticipations.js"></script>
+</body>
+</html>

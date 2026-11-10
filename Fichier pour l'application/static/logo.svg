@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" width="120" height="40" role="img" aria-label="StudyMatch">
+  <!-- Logo minimal pour len-tête ; vous pouvez remplacer ce fichier par votre image officielle. -->
+  <rect width="120" height="40" rx="6" fill="#1e3a5f"/>
+  <text x="60" y="26" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, sans-serif" font-size="14" font-weight="600">StudyMatch</text>
+</svg>

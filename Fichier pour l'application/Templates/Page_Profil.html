@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mon Profil — StudyMatch UL</title>
+    <link rel="stylesheet" href="/static/MonFichierStyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="page-sub">
+    <div class="profile-main-container-h">
+        <div class="profile-content-wrapper-h">
+
+            <a href="/mes-participations?etudiant_id={{ etudiant_id }}" class="back-link-h">
+                <i class="fa-solid fa-arrow-left"></i> Retour
+            </a>
+
+            <section class="profile-card-centered-h">
+                <div class="profile-header-h">
+                    <div class="profile-avatar-h">{{ user.prenom[:1] }}{{ user.nom[:1] }}</div>
+                    <h2>{{ user.prenom }} {{ user.nom }}</h2>
+                    <div class="profile-reliability-h">★ Appréciation : {{ user.note or 'N/A' }}</div>
+                </div>
+
+                <div class="profile-details-list-h">
+                    <div class="detail-item-h">
+                        <span class="detail-label-h">Courriel</span>
+                        <span class="detail-value-h">{{ user.email }}</span>
+                    </div>
+                    <div class="detail-item-h">
+                        <span class="detail-label-h">Programme</span>
+                        <span class="detail-value-h">{{ user.programme_id or 'N/A' }}</span>
+                    </div>
+                    <div class="detail-item-h">
+                        <span class="detail-label-h">Statut</span>
+                        <span class="detail-value-h status-online-text-h">
+                            {% if is_online %}
+                                ● En ligne
+                            {% else %}
+                                ○ Hors ligne
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <div class="profile-actions-outside-h">
+                <button id="settingsBtn" class="btn-settings-h">
+                    <i class="fa-solid fa-gear"></i> Paramètres
+                </button>
+                <a href="/logout" class="btn-logout-h logout-link">
+                    <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <script src="/static/MonProfil.js"></script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bilan de séance — {{ seance.csigle }}</title>
+  <link rel="stylesheet" href="/static/studysync-ul.css" />
+</head>
+<body class="page-sub page-eval">
+{% set show_session_summary = show_session_summary | default(false) %}
+{% set edit_p_requested = edit_p_requested | default('') %}
+{% set header_creer = 'none' %}
+{% include 'partials/_header_studymatch.html' %}
+
+<div class="eval-shell layout-max eval-layout">
+  <div class="eval-back-row">
+    {% if design_preview %}
+    <a class="eval-back" href="{{ url_for('page_mes_sessions', etudiant_id=etudiant_id, design='1') }}">&lt; Retour aux sessions</a>
+    {% else %}
+    <a class="eval-back" href="{{ url_for('page_mes_sessions', etudiant_id=etudiant_id) }}">&lt; Retour aux sessions</a>
+    {% endif %}
+  </div>
+
+  <div class="eval-pink-shell">
+  <header class="eval-page-intro">
+    <h1 class="eval-page-title">Bilan de séance : {{ seance.csigle }}</h1>
+    <p class="eval-page-subtitle">
+      {% if seance.nom_cours %}{{ seance.nom_cours }}{% else %}{{ seance.csigle }}{% endif %}
+      {% if seance.debut_date_longue %}<span class="eval-page-subtitle__sep" aria-hidden="true">•</span> {{ seance.debut_date_longue }}{% elif seance.debut_relatif %}<span class="eval-page-subtitle__sep" aria-hidden="true">•</span> {{ seance.debut_relatif }}{% endif %}
+      {% if seance.debut_heure %}<span class="eval-page-subtitle__sep" aria-hidden="true">•</span> {{ seance.debut_heure }}{% endif %}
+    </p>
+  </header>
+
+  {% if error_msg %}
+  <div class="eval-alert" role="alert">{{ error_msg }}</div>
+  {% endif %}
+
+  {% if is_creator %}
+  <section class="eval-session-panel" aria-labelledby="eval-session-heading">
+    <div class="eval-session-panel__banner">
+      <span class="eval-session-panel__icon-wrap" aria-hidden="true">
+        <svg class="eval-session-panel__icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+          <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <h2 class="eval-session-panel__heading" id="eval-session-heading">Évaluation de la séance</h2>
+    </div>
+    <div class="eval-session-panel__body">
+      {% if show_session_summary and retro_seance %}
+      <div class="eval-bilan" aria-label="Récapitulatif du bilan de séance">
+        <h3 class="eval-bilan__title">Votre bilan enregistré</h3>
+        {% if retro_seance.date_retroaction %}
+        <p class="eval-bilan__meta">Enregistré le {{ retro_seance.date_retroaction }}</p>
+        {% endif %}
+        <dl class="eval-bilan__list">
+          <div class="eval-bilan__row">
+            <dt class="eval-bilan__q">Les objectifs de la séance ont-ils été atteints ?</dt>
+            <dd class="eval-bilan__a">{% if retro_seance.objectifs_atteints is none %}—{% elif retro_seance.objectifs_atteints %}Oui{% else %}Non{% endif %}</dd>
+          </div>
+          <div class="eval-bilan__row">
+            <dt class="eval-bilan__q">Satisfaction globale</dt>
+            <dd class="eval-bilan__a">{{ retro_seance.note }}/5 — {{ evaluation_note_labels[retro_seance.note] }}</dd>
+          </div>
+          <div class="eval-bilan__row eval-bilan__row--block">
+            <dt class="eval-bilan__q">Points marquants</dt>
+            <dd class="eval-bilan__a eval-bilan__a--text">{% if retro_seance.commentaire %}{{ retro_seance.commentaire }}{% else %}<span class="eval-bilan__empty">(aucun commentaire)</span>{% endif %}</dd>
+          </div>
+        </dl>
+        <div class="eval-bilan__actions">
+          {% if design_preview %}
+          <a class="btn btn-outline eval-btn-modify" href="{{ url_for('page_evaluer_seance', seance_id=seance.seance_id, etudiant_id=etudiant_id, design='1', edit_session='1') }}">Modifier le bilan</a>
+          {% else %}
+          <a class="btn btn-outline eval-btn-modify" href="{{ url_for('page_evaluer_seance', seance_id=seance.seance_id, etudiant_id=etudiant_id, edit_session='1') }}">Modifier le bilan</a>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <form
+        class="eval-session-form eval-session-panel__form"
+        method="post"
+        action="{{ url_for('page_evaluer_seance', seance_id=seance.seance_id) }}"
+      >
+        <input type="hidden" name="etudiant_id" value="{{ etudiant_id }}" />
+        <input type="hidden" name="eval_kind" value="session" />
+
+        <div class="eval-field">
+          <span class="eval-label" id="objectifs-lbl">Les objectifs de la séance ont-ils été atteints ?</span>
+          <div class="eval-yesno-row" role="radiogroup" aria-labelledby="objectifs-lbl">
+            <label class="eval-yesno-item">
+              <input
+                type="radio"
+                name="objectifs_atteints"
+                value="1"
+                class="eval-yesno-input"
+                {% if retro_seance and retro_seance.objectifs_atteints == 1 %}checked{% endif %}
+                {% if not retro_seance or retro_seance.objectifs_atteints is none %}required{% endif %}
+              />
+              <span class="eval-yesno-face">Oui</span>
+            </label>
+            <label class="eval-yesno-item">
+              <input
+                type="radio"
+                name="objectifs_atteints"
+                value="0"
+                class="eval-yesno-input"
+                {% if retro_seance and retro_seance.objectifs_atteints == 0 %}checked{% endif %}
+              />
+              <span class="eval-yesno-face">Non</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="eval-field">
+          <label class="eval-label" for="commentaire-seance">Points marquants</label>
+          <textarea
+            id="commentaire-seance"
+            name="commentaire_seance"
+            class="eval-textarea eval-input"
+            rows="5"
+            maxlength="600"
+            placeholder="Précisions sur le déroulement, l’ambiance, ce qui a bien fonctionné ou moins bien…"
+          >{% if retro_seance and retro_seance.commentaire %}{{ retro_seance.commentaire }}{% endif %}</textarea>
+          <p class="eval-hint">Facultatif · max. 600 caractères</p>
+        </div>
+
+        <div class="eval-field">
+          <span class="eval-label" id="satisfaction-lbl">Satisfaction</span>
+          <div class="eval-rate-row" role="radiogroup" aria-labelledby="satisfaction-lbl">
+            {% for n in [1, 2, 3, 4, 5] %}
+            <label class="eval-rate-item">
+              <input
+                type="radio"
+                name="note_seance"
+                value="{{ n }}"
+                class="eval-rate-input"
+                {% if retro_seance and retro_seance.note == n %}checked{% endif %}
+                {% if not retro_seance or retro_seance.note is none %}{% if loop.first %}required{% endif %}{% endif %}
+              />
+              <span class="eval-rate-face" aria-hidden="true">{{ n }}</span>
+            </label>
+            {% endfor %}
+          </div>
+          <p class="eval-satisfaction-live" id="satisfaction-live" data-placeholder="Choisis une note ci-dessus.">{% if retro_seance and retro_seance.note is not none %}{{ evaluation_note_labels[retro_seance.note] }}{% endif %}</p>
+        </div>
+
+        <div class="eval-session-panel__submit">
+          <button type="submit" class="btn btn-primary eval-btn-save">Sauvegarder le bilan</button>
+        </div>
+      </form>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="eval-participants-section" aria-labelledby="eval-participants-heading">
+    <h2 class="eval-section-heading" id="eval-participants-heading">Évaluation des participants</h2>
+    {% if participants|length == 0 %}
+    <p class="eval-participants-count eval-participants-count--zero">Aucun participant à évaluer pour cette séance.</p>
+    <p class="eval-participants-hint">Vous pouvez tout de même enregistrer le bilan de séance ci-dessus.</p>
+    {% else %}
+    <p class="eval-participants-count">{{ participants|length }} participant{% if participants|length > 1 %}s{% endif %} à évaluer</p>
+    <div class="eval-participant-grid">
+      {% for p in participants %}
+      {% set _ini = ((p.prenom or '')[:1] ~ (p.nom or '')[:1])|upper %}
+      {% set show_p_summary = p.note_existante is not none and edit_p_requested != p.etudiant_id and (force_edit_participant_id is none or force_edit_participant_id != p.etudiant_id) %}
+      <article class="eval-person-card" aria-labelledby="nom-{{ p.etudiant_id }}">
+        <div class="eval-person-card__head">
+          <div class="eval-person__avatar" aria-hidden="true">{% if _ini %}{{ _ini }}{% else %}?{% endif %}</div>
+          <div class="eval-person__who">
+            <span class="eval-person__name" id="nom-{{ p.etudiant_id }}">{{ p.display }}</span>
+            {% if p.email_ulaval %}
+            <span class="eval-person__email">{{ p.email_ulaval }}</span>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if show_p_summary %}
+        <div class="eval-bilan eval-bilan--participant">
+          <h3 class="eval-bilan__title eval-bilan__title--sm">Évaluation enregistrée</h3>
+          <dl class="eval-bilan__list">
+            <div class="eval-bilan__row">
+              <dt class="eval-bilan__q">Note globale</dt>
+              <dd class="eval-bilan__a">{{ p.note_existante }}/5 — {{ evaluation_note_labels[p.note_existante] }}</dd>
+            </div>
+            <div class="eval-bilan__row eval-bilan__row--block">
+              <dt class="eval-bilan__q">Critères</dt>
+              <dd class="eval-bilan__a">
+                {% if p.tags_existant and p.tags_existant|length > 0 %}
+                <ul class="eval-bilan__tags">
+                  {% for key in p.tags_existant %}
+                  <li>{{ evaluation_tag_labels.get(key, key) }}</li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <span class="eval-bilan__empty">(aucun critère coché)</span>
+                {% endif %}
+              </dd>
+            </div>
+            <div class="eval-bilan__row eval-bilan__row--block">
+              <dt class="eval-bilan__q">Commentaire</dt>
+              <dd class="eval-bilan__a eval-bilan__a--text">{% if p.commentaire_existant %}{{ p.commentaire_existant }}{% else %}<span class="eval-bilan__empty">(aucun commentaire)</span>{% endif %}</dd>
+            </div>
+          </dl>
+        </div>
+        {% else %}
+        <form
+          class="eval-card-form eval-person-card__form"
+          method="post"
+          action="{{ url_for('page_evaluer_seance', seance_id=seance.seance_id) }}"
+        >
+          <input type="hidden" name="etudiant_id" value="{{ etudiant_id }}" />
+          <input type="hidden" name="eval_kind" value="participant" />
+          <input type="hidden" name="evalue_id" value="{{ p.etudiant_id }}" />
+
+          <div class="eval-field">
+            <label class="eval-label" for="note-{{ p.etudiant_id }}">Note globale</label>
+            <select
+              id="note-{{ p.etudiant_id }}"
+              name="note"
+              class="eval-note-select eval-input eval-input--select"
+              required
+              aria-describedby="note-hint-{{ p.etudiant_id }}"
+              {% if p.note_existante is not none %}disabled{% endif %}
+            >
+              <option value="" disabled {% if p.note_existante is none %}selected{% endif %}>Choisir…</option>
+              {% for n in [5, 4, 3, 2, 1] %}
+                <option value="{{ n }}" {% if p.note_existante == n %}selected{% endif %}>
+                  {{ n }} — {{ evaluation_note_labels[n] }}
+                </option>
+              {% endfor %}
+            </select>
+            <p class="eval-hint" id="note-hint-{{ p.etudiant_id }}">{% if p.note_existante is not none %}Note déjà donnée et non modifiable.{% else %}Les critères correspondent à la note choisie.{% endif %}</p>
+          </div>
+
+          <div class="eval-field">
+            <span class="eval-label" id="tags-lbl-{{ p.etudiant_id }}">Critères</span>
+            {% for note_val, tag_pairs in evaluation_tags_by_note_items %}
+            <div
+              class="eval-tags-panel"
+              data-for-note="{{ note_val }}"
+              role="group"
+              aria-labelledby="tags-lbl-{{ p.etudiant_id }}"
+              {% if p.note_existante != note_val %}hidden{% endif %}
+            >
+              <div class="eval-tags eval-tags--bubbles">
+                {% for tag_key, tag_label in tag_pairs %}
+                <label class="eval-tag">
+                  <input type="checkbox" name="tags" value="{{ tag_key }}" {% if p.tags_existant and tag_key in p.tags_existant %}checked{% endif %} />
+                  <span class="eval-tag-text">{{ tag_label }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="eval-field">
+            <label class="eval-label" for="comment-{{ p.etudiant_id }}">Commentaire <span class="eval-optional">(facultatif)</span></label>
+            <textarea
+              id="comment-{{ p.etudiant_id }}"
+              name="commentaire"
+              class="eval-textarea eval-input eval-textarea--compact"
+              rows="3"
+              maxlength="350"
+              placeholder="Remarques sur ce participant…"
+            >{{ p.commentaire_existant | default('', true) }}</textarea>
+          </div>
+
+          <div class="eval-person-card__actions">
+            <button type="submit" class="btn btn-primary eval-btn-participant">{% if p.note_existante is not none %}Enregistrer les modifications{% else %}Valider{% endif %}</button>
+          </div>
+        </form>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <script type="application/json" id="eval-note-labels-json">{{ evaluation_note_labels | tojson }}</script>
+  <script src="/static/EvaluerSeance.js" defer></script>
+</body>
+</html>

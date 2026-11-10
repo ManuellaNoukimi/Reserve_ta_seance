@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>StudyMatch — Séances disponibles</title>
+    <link rel="stylesheet" href="/static/studysync-ul.css">
+</head>
+<body class="page-disponibilite">
+
+{% set header_active = 'disponibilites' %}
+{% set header_creer = 'link' %}
+{% include 'partials/_header_studymatch.html' %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="messages layout-max" role="status" style="margin: 0.75rem auto 0; padding: 0 1rem;">
+      {% for category, message in messages %}
+        <p class="message message--{{ category }}">{{ message|safe }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<nav id="onglets" aria-label="Vue des séances">
+    <span class="onglet actif" id="onglet-disponibles" role="presentation">Disponibles</span>
+    <a class="onglet" id="onglet-participations" href="{{ url_for('page_mes_participations') }}">Mes participations</a>
+    <a class="onglet" id="onglet-mes-sessions" href="{{ url_for('page_mes_sessions') }}">Mes sessions</a>
+</nav>
+
+<section id="filters" aria-label="Filtres de recherche">
+
+    <div id="search-bar">
+        <span class="ul-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+        <input type="text" id="search-input" placeholder="Recherchez par nom ou sigle de cours..." autocomplete="off">
+        <button type="button" id="btn-search" title="Lancer la recherche">
+            <span class="ul-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+        </button>
+    </div>
+
+    <div id="filter-row">
+        <div id="filter-left">
+            <span class="ul-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/><circle cx="4" cy="18" r="2" fill="currentColor" stroke="none"/><circle cx="8" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="16" cy="6" r="2" fill="currentColor" stroke="none"/></svg></span>
+            <select id="filter-mode" aria-label="Mode de session">
+                <option value="">Tous les modes</option>
+                <option value="Présentiel">Présentiel</option>
+                <option value="En ligne">En ligne</option>
+                <option value="Distanciel">Hybride</option>
+            </select>
+
+            <label class="toggle">
+                <input type="checkbox" id="filter-places">
+                <span>Places disponibles</span>
+            </label>
+        </div>
+    </div>
+
+</section>
+
+<main id="sessions-container"></main>
+
+<script src="/static/MaPageDisponibilité.js"></script>
+</body>
+</html>

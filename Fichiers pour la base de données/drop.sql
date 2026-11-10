@@ -1,0 +1,15 @@
+DROP DATABASE Application_revision;
+USE Application_revision;
+DROP table if exists Etudiants;
+DROP table if exists Cours;
+DROP table if exists Programmes;
+DROP table if exists Seances_revision;
+DROP table if exists Jumeler;
+DROP table if exists Retroactions;
+DROP table if exists Inscrire;
+DROP table if exists Offrir;
+DROP table if exists Appartenir;
+DROP table if exists Donner;
+DROP table if exists Creer;
+DROP table if exists Contenir;
+DROP table if exists Reinitialiser_mot_de_passe;

@@ -1,0 +1,17 @@
+{# brand_size: hero | card | bar #}
+{% set brand_size = brand_size | default('bar') %}
+<a href="{{ url_for('page_accueil') }}" class="studymatch-brand studymatch-brand--{{ brand_size }}">
+  <div class="studymatch-brand__icon" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" focusable="false">
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+    </svg>
+  </div>
+  <div class="studymatch-brand__text">
+    {% if brand_size == 'hero' %}
+      <h1 class="studymatch-brand__title">StudyMatch</h1>
+    {% else %}
+      <span class="studymatch-brand__title">StudyMatch</span>
+    {% endif %}
+    <p class="studymatch-brand__subtitle">Université Laval</p>
+  </div>
+</a>
