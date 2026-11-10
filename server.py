@@ -7,6 +7,7 @@ import secrets
 from datetime import datetime, timedelta
 
 import pymysql
+from dotenv import load_dotenv
 from flask import (
     Flask,
     flash,
@@ -22,6 +23,8 @@ from markupsafe import escape
 from database import *
 import bcrypt #Pour scripter les données sensibles de la base de données
 
+load_dotenv()
+
 
 # Dossiers des gabarits et fichiers statiques : hors du répertoire par défaut de Flask
 # afin de rester alignés avec la structure du projet (voir dossier « Fichier pour l'application »).
@@ -35,8 +38,20 @@ app = Flask(
     static_folder=_STATIC_DIR,
     static_url_path="/static",
 )
-# Obligatoire pour pouvoir utiliser flash() et session
-app.secret_key = os.getenv("SECRET_KEY", "studymatch_ul_secret_key")
+# La clé de session ne doit jamais avoir de valeur publique par défaut.
+_secret_key = os.getenv("SECRET_KEY")
+if not _secret_key:
+    raise RuntimeError(
+        "SECRET_KEY est absente. Copie .env.example vers .env et génère une clé locale."
+    )
+
+app.config.update(
+    SECRET_KEY=_secret_key,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.getenv("SESSION_COOKIE_SECURE", "false").lower()
+    == "true",
+)
 
 
 def _sync_session_statuses():
@@ -50,16 +65,8 @@ def _sync_session_statuses():
         pass
 
 
-def _etudiant_id_from_request():
-    """Identifiant explicite dans l’URL ou le formulaire (prioritaire)."""
-    return (request.args.get("etudiant_id") or request.form.get("etudiant_id") or "").strip()
-
-
 def _etudiant_id_effectif():
-    """Query/form d’abord, sinon session après connexion."""
-    eid = _etudiant_id_from_request()
-    if eid:
-        return eid
+    """Retourne uniquement l'identité authentifiée dans la session Flask."""
     return (session.get("etudiant_id") or "").strip()
 
 
@@ -192,9 +199,7 @@ def page_disponibilite():
 
 @app.route("/mes-sessions", methods=["GET"])
 def page_mes_sessions():
-    etudiant_id = request.args.get("etudiant_id", "").strip() or (
-        session.get("etudiant_id") or ""
-    ).strip()
+    etudiant_id = _etudiant_id_effectif()
 
     if not etudiant_id:
         flash("Connecte-toi pour accéder à tes sessions.")
@@ -424,7 +429,7 @@ def page_evaluer_seance(seance_id):
 def creer_mes_sessions():
     # Évite « invalid response » si quelqu’un ouvre cette URL en GET (signet, lien direct).
     if request.method == "GET":
-        eid = (request.args.get("etudiant_id", "").strip() or (session.get("etudiant_id") or "").strip())
+        eid = _etudiant_id_effectif()
         if eid:
             return redirect(url_for("page_mes_sessions", etudiant_id=eid))
         return redirect(url_for("page_login"))
@@ -986,7 +991,10 @@ def page_signup():
 @app.route("/forgot-password", methods=["GET", "POST"])
 def page_forgot_password():
     if request.method == "GET":
-        return render_template("Page_forgot_password.html")
+        return render_template(
+            "Page_forgot_password.html",
+            reset_link=session.pop("password_reset_link", None),
+        )
 
     email_ulaval = request.form.get("email_ulaval", "").strip()
 
@@ -1028,9 +1036,9 @@ def page_forgot_password():
         db.connection.commit()
 
         reset_link = url_for("page_reset_password", token=token, _external=True)
-        #flash(f"Lien de réinitialisation : {reset_link}")
-        flash(
-            f'Lien de réinitialisation : <a href="{reset_link}" style="color:blue;">Réinitialiser mon mot de passe</a>', "info")
+        # Démonstration locale : en production, ce lien doit être envoyé par courriel.
+        session["password_reset_link"] = reset_link
+        flash("Le lien de réinitialisation a été généré.", "info")
         return redirect(url_for("page_forgot_password"))
     except Exception as e:
         flash("Une erreur s'est produite. Veuillez réessayer.","error")
@@ -1186,7 +1194,7 @@ def page_mes_participations():
 @app.route("/mon-profil")
 def page_mon_profil():
     """Affiche le profil complet de l'étudiant."""
-    eid = request.args.get("etudiant_id", "").strip()
+    eid = _etudiant_id_effectif()
     if not eid:
         # Si pas d'ID, on redirige vers le login
         return redirect(url_for('page_login'))
@@ -1208,4 +1216,4 @@ def page_mon_profil():
                            is_online=True)  # Nouvelle variable passée au HTML
 if __name__ == "__main__":
     # Point d'entrée pour lancer l'application en local (développement).
-    app.run(debug=True)
+    app.run(debug=os.getenv("FLASK_DEBUG", "false").lower() == "true")

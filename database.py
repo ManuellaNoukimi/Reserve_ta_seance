@@ -289,7 +289,9 @@ class Database:
             user=self.user,
             password=self.password,
             db=self.database,
-            autocommit=True,
+            # Les opérations multi-requêtes utilisent commit/rollback afin de
+            # rester atomiques (création d'une séance, inscription, etc.).
+            autocommit=False,
             charset="utf8mb4",
             use_unicode=True,
         )

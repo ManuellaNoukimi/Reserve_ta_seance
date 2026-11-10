@@ -19,7 +19,7 @@
                   {% if messages %}
                     <div class="messages">
                       {% for category, message in messages %}
-                        <p class="message message--{{ category }}">{{ message|safe }}</p>
+                        <p class="message message--{{ category }}">{{ message }}</p>
                       {% endfor %}
                     </div>
                   {% endif %}

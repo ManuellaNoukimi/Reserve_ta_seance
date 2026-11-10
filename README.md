@@ -1,8 +1,149 @@
-# GLO-2005.PROJET
-Plateforme de révision collaborative – projet universitaire
+# StudySync UL
 
-L’insertion sociale constitue une étape essentielle du parcours universitaire de chaque étudiant. Pour les nouveaux arrivants et particulièrement ceux provenant de l’international, cette intégration peut parfois s’avérer difficile. Qu’il s’agisse de trouver des collègues de travail ou simplement de se faire des amis, la tâche n’est pas toujours aisée. Cette situation peut entraîner un sentiment d’isolement, une baisse de motivation et rendre plus complexes les travaux d’équipe pour plusieurs. 
+Plateforme Web collaborative permettant aux étudiants de l'Université Laval de trouver, créer et gérer des séances de révision.
 
-Dans le cadre du cours GLO-2005, notre équipe s’est penchée sur cette problématique et a cherché à proposer une solution concrète et accessible aux étudiants de l’Université Laval. Bien que des plateformes institutionnelles existent, elles sont principalement orientées vers la gestion administrative et pédagogique des cours, et non vers la mise en relation sociale et collaborative entre étudiants. 
+> Projet universitaire réalisé en équipe dans le cadre du cours GLO-2005. Le dépôt est actuellement en cours de préparation pour servir de projet de portfolio.
 
-Ce projet vise donc à développer une plateforme numérique collaborative exclusivement destinée aux étudiants de notre université, afin de répondre à un double besoin fréquemment observé dans notre milieu : faciliter l’intégration sociale des étudiants et améliorer la collaboration académique, notamment dans le cadre des travaux d’équipe et des séances d’étude.
+## Problème ciblé
+
+L'intégration universitaire et la recherche de partenaires de révision peuvent être difficiles, particulièrement pour les nouveaux étudiants. StudySync UL facilite la mise en relation entre étudiants qui suivent les mêmes cours et souhaitent étudier ensemble.
+
+## Fonctionnalités actuelles
+
+- création d'un compte avec une adresse `@ulaval.ca`;
+- authentification et réinitialisation du mot de passe;
+- création, modification et annulation de séances de révision;
+- recherche et filtrage des séances disponibles;
+- demandes de participation avec acceptation ou refus par l'organisateur;
+- suivi des séances créées et des participations;
+- évaluation d'une séance et rétroaction entre participants;
+- gestion des places disponibles et du cycle de vie des séances.
+
+## Technologies
+
+| Partie | Technologies |
+| --- | --- |
+| Interface | HTML5, CSS3, JavaScript, Jinja |
+| Serveur | Python, Flask |
+| Données | MySQL/MariaDB, PyMySQL |
+| Sécurité | bcrypt, sessions Flask, variables d'environnement |
+| Collaboration | Git et GitHub |
+
+## Installation locale
+
+### 1. Cloner le dépôt
+
+```bash
+git clone https://github.com/ManuellaNoukimi/Reserve_ta_seance.git
+cd Reserve_ta_seance
+```
+
+### 2. Créer un environnement Python
+
+Sous macOS ou Linux :
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Sous Windows PowerShell :
+
+```powershell
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+### 3. Installer les dépendances
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 4. Configurer l'environnement
+
+Copier `.env.example` vers `.env`, puis remplacer les valeurs par celles de la base MySQL locale.
+
+```bash
+cp .env.example .env
+```
+
+Sous Windows PowerShell :
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Pour générer une clé Flask locale :
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+### 5. Initialiser MySQL
+
+Le script SQL crée la base `Application_revision`, ses tables, ses contraintes et ses objets programmés.
+
+```bash
+mysql -u root -p < "Fichiers pour la base de données/Base_de_données.sql"
+```
+
+Après avoir configuré `.env`, les données de démonstration peuvent être ajoutées avec :
+
+```bash
+python insertiondata.py
+```
+
+### 6. Démarrer l'application
+
+```bash
+python server.py
+```
+
+Ouvrir ensuite `http://127.0.0.1:5000`.
+
+## Structure actuelle
+
+```text
+.
+├── server.py                         # Routes et logique HTTP Flask
+├── database.py                       # Accès aux données et logique MySQL
+├── insertiondata.py                  # Données de démonstration
+├── Fichier pour l'application/
+│   ├── Templates/                    # Gabarits Jinja
+│   └── static/                       # CSS, JavaScript et images
+├── Fichiers pour la base de données/
+│   └── Base_de_données.sql           # Schéma MySQL
+├── .env.example
+└── requirements.txt
+```
+
+Cette organisation reflète encore la version universitaire originale. Une restructuration progressive vers des modules Flask plus petits est prévue.
+
+## Modèle de données
+
+Le schéma couvre notamment :
+
+- les étudiants et leurs programmes;
+- les cours;
+- les séances de révision;
+- les demandes et confirmations de participation;
+- les évaluations entre participants;
+- la rétroaction globale sur une séance;
+- les jetons de réinitialisation du mot de passe.
+
+## Feuille de route
+
+- [ ] renforcer l'autorisation et la protection CSRF;
+- [ ] diviser `server.py` en modules Flask;
+- [ ] isoler l'accès aux données de la logique métier;
+- [ ] ajouter des tests automatisés avec `pytest`;
+- [ ] ajouter une intégration continue GitHub Actions;
+- [ ] publier une démonstration en ligne;
+- [ ] ajouter des captures d'écran et une courte vidéo de démonstration;
+- [ ] recommander des séances selon les cours et disponibilités.
+
+## État du projet
+
+StudySync UL est un projet éducatif en amélioration active. La version actuelle est conçue pour une utilisation locale et ne doit pas être utilisée avec des données personnelles réelles avant la fin du renforcement de sécurité.

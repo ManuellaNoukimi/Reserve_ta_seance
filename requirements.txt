@@ -1,0 +1,6 @@
+Flask
+PyMySQL
+python-dotenv
+cryptography
+bcrypt
+

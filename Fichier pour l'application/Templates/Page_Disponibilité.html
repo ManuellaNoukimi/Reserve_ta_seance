@@ -16,7 +16,7 @@
   {% if messages %}
     <div class="messages layout-max" role="status" style="margin: 0.75rem auto 0; padding: 0 1rem;">
       {% for category, message in messages %}
-        <p class="message message--{{ category }}">{{ message|safe }}</p>
+        <p class="message message--{{ category }}">{{ message }}</p>
       {% endfor %}
     </div>
   {% endif %}

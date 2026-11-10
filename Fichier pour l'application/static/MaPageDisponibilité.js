@@ -81,7 +81,9 @@ function afficherSessions(sessions) {
     conteneur.innerHTML = "";
 
     if (!sessions || sessions.length === 0) {
-        conteneur.innerHTML = "<p>Aucune session trouvée.</p>";
+        const message = document.createElement("p");
+        message.textContent = "Aucune séance trouvée.";
+        conteneur.appendChild(message);
         return;
     }
 
@@ -113,10 +115,6 @@ function creerCarteSessions(session) {
         ? session.lieu_ou_lien
         : "—";
 
-    const desc = session.description != null && String(session.description).trim() !== ""
-        ? `<div class="session-desc">${session.description}</div>`
-        : "";
-
     const textePlaces = maxParticipants > 0
         ? (estComplet ? "Complet" : placesRestantes + " restante(s)")
         : "Illimité";
@@ -134,34 +132,56 @@ function creerCarteSessions(session) {
                        !estComplet &&
                        userStatus !== 'En_attente';
     
-    let boutonRejoin = "";
+    let boutonRejoin = null;
     if (userStatus === 'En_attente') {
-        boutonRejoin = `
-            <button type="button" class="btn btn-primary" disabled title="Demande en attente">
-                Demande en attente
-            </button>
-        `;
+        boutonRejoin = document.createElement("button");
+        boutonRejoin.type = "button";
+        boutonRejoin.className = "btn btn-primary";
+        boutonRejoin.disabled = true;
+        boutonRejoin.title = "Demande en attente";
+        boutonRejoin.textContent = "Demande en attente";
     } else if (peutRejoin) {
-        boutonRejoin = `
-            <button type="button" class="btn btn-primary" onclick="demanderParticipation(${session.seance_id})">
-                Rejoindre la session
-            </button>
-        `;
+        boutonRejoin = document.createElement("button");
+        boutonRejoin.type = "button";
+        boutonRejoin.className = "btn btn-primary";
+        boutonRejoin.textContent = "Rejoindre la séance";
+        boutonRejoin.addEventListener("click", function () {
+            demanderParticipation(session.seance_id);
+        });
     }
 
-    div.innerHTML = `
-        <h3>${titre}</h3>
-        <div class="session-meta">
-            <div><strong>Mode</strong> ${session.mode || "—"}</div>
-            <div><strong>Date</strong> ${session.debut_datetime || "—"}</div>
-            <div><strong>Lieu / lien</strong> ${lieu}</div>
-            <div><strong>Places</strong> ${textePlaces}</div>
-        </div>
-        ${desc}
-        <div class="session-actions">
-            ${boutonRejoin}
-        </div>
-    `;
+    const heading = document.createElement("h3");
+    heading.textContent = titre;
+    div.appendChild(heading);
+
+    const meta = document.createElement("div");
+    meta.className = "session-meta";
+    [
+        ["Mode", session.mode || "—"],
+        ["Date", session.debut_datetime || "—"],
+        ["Lieu / lien", lieu],
+        ["Places", textePlaces]
+    ].forEach(function ([label, value]) {
+        const row = document.createElement("div");
+        const strong = document.createElement("strong");
+        strong.textContent = label + " ";
+        row.appendChild(strong);
+        row.appendChild(document.createTextNode(String(value)));
+        meta.appendChild(row);
+    });
+    div.appendChild(meta);
+
+    if (session.description != null && String(session.description).trim() !== "") {
+        const description = document.createElement("div");
+        description.className = "session-desc";
+        description.textContent = session.description;
+        div.appendChild(description);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "session-actions";
+    if (boutonRejoin) actions.appendChild(boutonRejoin);
+    div.appendChild(actions);
 
     return div;
 }
