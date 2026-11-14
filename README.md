@@ -28,6 +28,7 @@ L'intégration universitaire et la recherche de partenaires de révision peuvent
 | Données | MySQL/MariaDB, PyMySQL |
 | Sécurité | bcrypt, sessions Flask, variables d'environnement |
 | Collaboration | Git et GitHub |
+| Qualité | pytest, couverture de tests, GitHub Actions |
 
 ## Installation locale
 
@@ -103,6 +104,30 @@ python server.py
 
 Ouvrir ensuite `http://127.0.0.1:5000`.
 
+## Tests automatisés
+
+Installer les dépendances de développement :
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Lancer les tests :
+
+```bash
+pytest
+```
+
+Afficher également la couverture :
+
+```bash
+pytest --cov=. --cov-report=term-missing
+```
+
+Les premiers tests vérifient les pages publiques, les redirections vers la
+connexion et l'impossibilité d'usurper un utilisateur avec un paramètre
+`etudiant_id` dans l'URL. Ils ne nécessitent pas de serveur MySQL.
+
 ## Structure actuelle
 
 ```text
@@ -110,6 +135,8 @@ Ouvrir ensuite `http://127.0.0.1:5000`.
 ├── server.py                         # Routes et logique HTTP Flask
 ├── database.py                       # Accès aux données et logique MySQL
 ├── insertiondata.py                  # Données de démonstration
+├── tests/                             # Tests automatisés pytest
+├── .github/workflows/tests.yml        # Intégration continue
 ├── Fichier pour l'application/
 │   ├── Templates/                    # Gabarits Jinja
 │   └── static/                       # CSS, JavaScript et images
@@ -138,8 +165,8 @@ Le schéma couvre notamment :
 - [ ] renforcer l'autorisation et la protection CSRF;
 - [ ] diviser `server.py` en modules Flask;
 - [ ] isoler l'accès aux données de la logique métier;
-- [ ] ajouter des tests automatisés avec `pytest`;
-- [ ] ajouter une intégration continue GitHub Actions;
+- [x] ajouter les premiers tests automatisés avec `pytest`;
+- [x] ajouter une intégration continue GitHub Actions;
 - [ ] publier une démonstration en ligne;
 - [ ] ajouter des captures d'écran et une courte vidéo de démonstration;
 - [ ] recommander des séances selon les cours et disponibilités.
